@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 
 # Create your views here.
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -8,11 +8,31 @@ from .forms import ProduitForm,PointVentForm
 from django.views.generic import (DetailView,CreateView,DeleteView,ListView)
 from django.urls import reverse
 
+from django.contrib.auth import (authenticate,
+                                 login,
+                                 logout
+                                )
 import csv,io
 from django.urls import reverse_lazy
 
 from django.http import HttpResponse
 from django.contrib.auth.models import User
+
+
+def login_view(request): # users will login with their Email & Password
+        title = "Login"
+        form = PointVentForm(request.POST or None)
+        if form.is_valid():
+            email = form.cleaned_data.get("email")
+            password = form.cleaned_data.get("password")
+            form.savet()
+            # authenticates Email & Password
+            return redirect("listproduit")
+        context = {"form":form,
+        'title':title,
+        }
+
+        return render(request, "Montreapp/form.html", context)
 
 class CreateProduit(LoginRequiredMixin,CreateView):
 
@@ -66,9 +86,20 @@ class DeleteAnnonce(LoginRequiredMixin,DeleteView):
 
 
 
-
 class CreatePointVente(LoginRequiredMixin,CreateView):
 
 	form_class       =PointVentForm
 	model            =PointVente
 	template_name    ="Montreapp/Forpointvente.html"
+
+	def get_success_url(self, *args, **kwargs):
+	   return reverse('detailpointvente',kwargs={'slug':self.object.slug})
+
+
+
+class DetailPointVente(DetailView):
+
+	model                =PointVente
+	template_name        ="Montreapp/detailpointvente.html"
+	context_object_name  ='point'
+

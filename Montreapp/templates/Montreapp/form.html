@@ -1,0 +1,14 @@
+{% extends "Montreapp/base.html" %}
+
+{% block content %}
+<form class="post-form" method='POST'>{% csrf_token %}
+	{{form.email}}
+	{{form.password}}
+
+	<button type="submit" name="button">
+		dkhel
+	</button>
+
+</form>
+
+{% endblock %}

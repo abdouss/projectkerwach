@@ -68,6 +68,7 @@ class Produit(models.Model):
 	    super(Produit, self).save()
 
 
+import uuid
 
 class PointVente(models.Model):
 
@@ -98,10 +99,29 @@ class PointVente(models.Model):
 	email  =models.EmailField(unique=True, blank=False)
 
 	admin    =models.ForeignKey(User,on_delete=models.CASCADE)
+	slug               =models.SlugField(unique=True,default=uuid.uuid4)
+
 
 	
 
 	def __unicode__(self):
 			return self.username
+
+	def _get_unique_slug(self):
+	    slug = slugify(self.username)
+	    unique_slug = slug
+	    num = 1
+	    while PointVente.objects.filter(slug=unique_slug).exists():
+	        unique_slug = '{}-{}'.format(slug, num)
+	        num += 1
+	    return unique_slug
+
+	def save(self, *args, **kwargs):
+	    if not self.slug:
+	        self.slug = self._get_unique_slug()
+	    super(PointVente, self).save()
+
+
+
 
 	
