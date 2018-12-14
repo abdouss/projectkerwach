@@ -4,11 +4,15 @@ from django.db import models
 from django.conf import settings
 from django.urls import reverse
 from django.utils.text import slugify
+from django.core.validators import RegexValidator
+
+# Create your models here.
+USERNAME_REGEX = '^[a-zA-Z0-9.+-]*$'
+NAME_REGEX = '^[a-zA-Z]*$'
 
 # Create your models here.
 User = settings.AUTH_USER_MODEL
 
-from django.urls import reverse
 
 
 
@@ -64,3 +68,40 @@ class Produit(models.Model):
 	    super(Produit, self).save()
 
 
+
+class PointVente(models.Model):
+
+	username = models.CharField(max_length=256, unique=True,
+	                        validators=[
+	                                RegexValidator(
+	                                regex = USERNAME_REGEX,
+	                                message = 'Username must be Alpahnumeric or contain any of the following: ".+ -" ',
+	                                code='invalid_username'
+	                                )]
+	                        )
+	first_name = models.CharField(max_length=256, blank=False,
+	                          validators=[
+	                                RegexValidator(
+	                                regex = NAME_REGEX,
+	                                message = 'Name must be Alphabetic',
+	                                code='invalid_first_name'
+	                                )]
+	                        )
+	last_name = models.CharField(max_length=256, blank=False,
+	                          validators=[
+	                                RegexValidator(
+	                                regex = NAME_REGEX,
+	                                message = 'Name must be Alphabetic',
+	                                code='invalid_last_name'
+	                                )]
+	                        )
+	email  =models.EmailField(unique=True, blank=False)
+
+	admin    =models.ForeignKey(User,on_delete=models.CASCADE)
+
+	
+
+	def __unicode__(self):
+			return self.username
+
+	

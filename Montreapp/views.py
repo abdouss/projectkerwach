@@ -2,9 +2,9 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Produit
+from .models import Produit,PointVente
 
-from .forms import ProduitForm
+from .forms import ProduitForm,PointVentForm
 from django.views.generic import (DetailView,CreateView,DeleteView,ListView)
 from django.urls import reverse
 
@@ -66,3 +66,9 @@ class DeleteAnnonce(LoginRequiredMixin,DeleteView):
 
 
 
+
+class CreatePointVente(LoginRequiredMixin,CreateView):
+
+	form_class       =PointVentForm
+	model            =PointVente
+	template_name    ="Montreapp/Forpointvente.html"
