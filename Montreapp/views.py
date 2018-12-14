@@ -25,7 +25,7 @@ def login_view(request): # users will login with their Email & Password
         if form.is_valid():
             email = form.cleaned_data.get("email")
             password = form.cleaned_data.get("password")
-            form.savet()
+            form.save()
             # authenticates Email & Password
             return redirect("listproduit")
         context = {"form":form,
